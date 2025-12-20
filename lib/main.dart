@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'src/screens/home/home_screen.dart';
+// import 'src/screens/home/home_screen.dart';
+import 'src/screens/splash/splash_screen.dart';
 
 void main() {
   runApp(const GebetaEatsApp());
@@ -14,7 +15,7 @@ class GebetaEatsApp extends StatelessWidget {
       title: 'GebetaEats',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.green, useMaterial3: true),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
