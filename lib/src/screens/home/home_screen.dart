@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../widgets/category_card.dart';
+import '../../widgets/featured_restaurant_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,85 +9,142 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GebetaEats'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        titleSpacing: 0,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              // Search bar
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    // Later: navigate to SearchScreen
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    height: 44,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.search, color: Colors.grey),
+                        SizedBox(width: 8),
+                        Text(
+                          'Search food or restaurants',
+                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              // Location
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'Deliver to',
+                    style: TextStyle(fontSize: 10, color: Colors.grey),
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on, size: 16),
+                      SizedBox(width: 4),
+                      Text(
+                        'New York',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
-      body: Padding(
+
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar placeholder
-            Container(
-              height: 50,
-              width: double.infinity,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text('Search for food or restaurants'),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Categories title
+            // Categories Section
             const Text(
               'Categories',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-
-            const SizedBox(height: 8),
-
-            // Categories placeholder
+            SizedBox(height: 12),
             SizedBox(
-              height: 80,
+              height: 100, // card height
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: List.generate(
-                  5,
-                  (index) => Container(
-                    width: 80,
-                    margin: const EdgeInsets.only(right: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text('Cat ${index + 1}'),
+                children: [
+                  CategoryCard(icon: Icons.fastfood, label: 'Burgers'),
+                  CategoryCard(icon: Icons.local_pizza, label: 'Pizza'),
+                  CategoryCard(icon: Icons.coffee, label: 'Coffee'),
+                  CategoryCard(
+                    icon: Icons.ramen_dining,
+                    label: 'Traditional Food',
                   ),
-                ),
+                ],
               ),
             ),
+            const SizedBox(height: 24),
 
-            const SizedBox(height: 16),
-
-            // Restaurants title
+            const SizedBox(height: 24),
             const Text(
-              'Popular Restaurants',
+              'Featured Restaurants',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 16),
 
-            const SizedBox(height: 8),
-
-            // Restaurant list placeholder
-            Expanded(
-              child: ListView.builder(
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 100,
-                    margin: const EdgeInsets.only(bottom: 12),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text('Restaurant ${index + 1}'),
-                  );
-                },
+            SizedBox(
+              height: 200,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: const [
+                  FeaturedRestaurantCard(
+                    imageUrl:
+                        'https://images.unsplash.com/photo-1555992336-03a23c4c15b6',
+                    name: 'Burger King',
+                    rating: 4.5,
+                    deliveryTime: '25-30 mins',
+                    priceRange: '\$',
+                  ),
+                  FeaturedRestaurantCard(
+                    imageUrl:
+                        'https://images.unsplash.com/photo-1600891964599-f61ba0e24092',
+                    name: 'Pizza Palace',
+                    rating: 4.2,
+                    deliveryTime: '20-25 mins',
+                    priceRange: '\$\$',
+                  ),
+                  FeaturedRestaurantCard(
+                    imageUrl:
+                        'https://images.unsplash.com/photo-1617196033552-2303a30b0f5f',
+                    name: 'Coffee Corner',
+                    rating: 4.8,
+                    deliveryTime: '15-20 mins',
+                    priceRange: '\$',
+                  ),
+                ],
               ),
+            ),
+
+            Text(
+              'All Restaurants',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
         ),
