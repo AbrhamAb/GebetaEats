@@ -1,59 +1,88 @@
 import 'package:flutter/material.dart';
-import '../../widgets/category_card.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  // simple local categories for now
-  final List<Map<String, String>> categories = [
-    {'name': 'Ethiopian', 'image': 'https://i.imgur.com/8UfI2aJ.png'},
-    {'name': 'Burgers', 'image': 'https://i.imgur.com/EfJ7o2f.png'},
-    {'name': 'Pizza', 'image': 'https://i.imgur.com/YpCzWkB.png'},
-    {'name': 'Drinks', 'image': 'https://i.imgur.com/GiFRZHV.png'},
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('GebetaEats'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('GebetaEats'),
+        backgroundColor: Colors.green,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
-            const Align(
+            // Search bar placeholder
+            Container(
+              height: 50,
+              width: double.infinity,
               alignment: Alignment.centerLeft,
-              child: Text(
-                'Categories',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text('Search for food or restaurants'),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Categories title
+            const Text(
+              'Categories',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Categories placeholder
+            SizedBox(
+              height: 80,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: List.generate(
+                  5,
+                  (index) => Container(
+                    width: 80,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text('Cat ${index + 1}'),
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 10),
+
+            const SizedBox(height: 16),
+
+            // Restaurants title
+            const Text(
+              'Popular Restaurants',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Restaurant list placeholder
             Expanded(
-              child: GridView.builder(
-                itemCount: categories.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.0,
-                ),
+              child: ListView.builder(
+                itemCount: 5,
                 itemBuilder: (context, index) {
-                  final c = categories[index];
-                  return CategoryCard(
-                    name: c['name']!,
-                    imageUrl: c['image']!,
-                    onTap: () {
-                      // placeholder tap — we'll implement navigation later
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Tapped ${c['name']}')),
-                      );
-                    },
+                  return Container(
+                    height: 100,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text('Restaurant ${index + 1}'),
                   );
                 },
               ),
