@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/category_card.dart';
 import '../../widgets/featured_restaurant_card.dart';
+import '../../widgets/all_restaurant_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -142,9 +143,41 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            Text(
+            const SizedBox(height: 24),
+            const Text(
               'All Restaurants',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+
+            // Vertical scroll list
+            Column(
+              children: const [
+                AllRestaurantCard(
+                  imageUrl:
+                      'https://images.unsplash.com/photo-1555992336-03a23c4c15b6',
+                  name: 'Burger King',
+                  rating: 4.5,
+                  deliveryTime: '25-30 mins',
+                  priceRange: '\$',
+                ),
+                AllRestaurantCard(
+                  imageUrl:
+                      'https://images.unsplash.com/photo-1600891964599-f61ba0e24092',
+                  name: 'Pizza Palace',
+                  rating: 4.2,
+                  deliveryTime: '20-25 mins',
+                  priceRange: '\$\$',
+                ),
+                AllRestaurantCard(
+                  imageUrl:
+                      'https://images.unsplash.com/photo-1617196033552-2303a30b0f5f',
+                  name: 'Coffee Corner',
+                  rating: 4.8,
+                  deliveryTime: '15-20 mins',
+                  priceRange: '\$',
+                ),
+              ],
             ),
           ],
         ),
