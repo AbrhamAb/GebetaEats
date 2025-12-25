@@ -5,7 +5,7 @@ import 'models/mock_data.dart';
 import 'theme.dart';
 import 'views/splash/splash_screen.dart';
 import 'views/onboarding/onboarding_screen.dart';
-import 'views/auth/login_screen.dart';
+// import 'views/auth/login_screen.dart';
 import 'views/home/home_screen.dart';
 import 'views/restaurant/restaurant_detail_screen.dart';
 import 'views/cart/cart_screen.dart';
@@ -26,8 +26,8 @@ class _GebetaeatsAppState extends State<GebetaeatsApp> {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case '/onboarding':
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
-      case '/login':
-        return MaterialPageRoute(builder: (_) => const LoginScreen());
+      // case '/login':
+      // return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case '/restaurant':
