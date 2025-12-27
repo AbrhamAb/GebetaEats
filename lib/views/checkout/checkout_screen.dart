@@ -79,31 +79,10 @@ class CheckoutScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const _VisilyStamp(),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _VisilyStamp extends StatelessWidget {
-  const _VisilyStamp();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: const <Widget>[
-        Text(
-          'Made with ',
-          style: TextStyle(color: AppColors.muted, fontSize: 11),
-        ),
-        Icon(Icons.bolt, size: 16, color: AppColors.primaryDark),
-        SizedBox(width: 4),
-        Text('Visily', style: TextStyle(color: AppColors.muted, fontSize: 11)),
-      ],
     );
   }
 }

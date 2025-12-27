@@ -59,36 +59,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 ],
               ),
             ),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              child: Row(
-                children: <Widget>[
-                  const Text(
-                    'Made with ',
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
-                  Container(
-                    width: 18,
-                    height: 18,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                    child: const Icon(
-                      Icons.bolt,
-                      size: 14,
-                      color: AppColors.primaryDark,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  const Text(
-                    'Visily',
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
