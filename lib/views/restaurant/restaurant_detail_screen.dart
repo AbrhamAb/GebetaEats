@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../app_state.dart';
 import '../../models/mock_data.dart';
+import '../../models/restaurant_model.dart';
+import '../../models/dish.dart';
 import '../../theme.dart';
 
 class RestaurantDetailScreen extends StatefulWidget {

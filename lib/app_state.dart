@@ -1,63 +1,51 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'models/cart_entry.dart';
+import 'models/dish.dart';
 import 'models/order_data.dart';
-import 'models/order_status.dart';
+
 
 class AppState extends ChangeNotifier {
+  final Map<String, CartEntry> _items = {};
+
+  Map<String, CartEntry> get items => Map.unmodifiable(_items);
+
+  void addDish(Dish dish) {
+    if (_items.containsKey(dish.id)) {
+      _items[dish.id]!.quantity += 1;
+    } else {
+      _items[dish.id] = CartEntry(dish: dish);
+    }
+    notifyListeners();
+  }
+
+  void decrementDish(Dish dish) {
+    final entry = _items[dish.id];
+    if (entry == null) return;
+    if (entry.quantity > 1) {
+      entry.quantity -= 1;
+    } else {
+      _items.remove(dish.id);
+    }
+    notifyListeners();
+  }
+
+  void removeDish(Dish dish) {
+    _items.remove(dish.id);
+    notifyListeners();
+  }
+
+  double get subtotal => _items.values.fold(0, (sum, e) => sum + e.total);
+  double get deliveryFee => items.isEmpty ? 0 : 3.50;
+  double get total => subtotal + deliveryFee;
+  int get totalItems => _items.values.fold(0, (sum, e) => sum + e.quantity);
+
+  // Orders stored in the app state (empty by default).
   final List<OrderData> _orders = [];
 
-  List<OrderData> get orders => _orders;
+  List<OrderData> get orders => List.unmodifiable(_orders);
 
-  AppState() {
-    _loadOrders();
-  }
-
-  // 🛒 PLACE ORDER
-  void placeOrder(OrderData order) {
+  void addOrder(OrderData order) {
     _orders.add(order);
-    _saveOrders();
-    notifyListeners();
-    _startOrderFlow(order);
-  }
-
-  // ⏳ ORDER STATUS FLOW
-  void _startOrderFlow(OrderData order) async {
-    await Future.delayed(const Duration(seconds: 3));
-    order.status = OrderStatus.preparing;
-    _saveOrders();
-    notifyListeners();
-
-    await Future.delayed(const Duration(seconds: 3));
-    order.status = OrderStatus.onTheWay;
-    _saveOrders();
-    notifyListeners();
-
-    await Future.delayed(const Duration(seconds: 3));
-    order.status = OrderStatus.delivered;
-    _saveOrders();
-    notifyListeners();
-  }
-
-  // 💾 SAVE ORDERS LOCALLY
-  Future<void> _saveOrders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final encoded = _orders.map((o) => jsonEncode(o.toJson())).toList();
-    await prefs.setStringList('orders', encoded);
-  }
-
-  // 📥 LOAD ORDERS LOCALLY
-  Future<void> _loadOrders() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getStringList('orders') ?? [];
-
-    _orders.clear();
-    _orders.addAll(
-      saved.map((e) => OrderData.fromJson(jsonDecode(e))),
-    );
-
     notifyListeners();
   }
 }
@@ -66,12 +54,12 @@ class AppStateScope extends InheritedNotifier<AppState> {
   const AppStateScope({
     super.key,
     required super.notifier,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   static AppState of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<AppStateScope>()!
-        .notifier!;
+    final scope = context.dependOnInheritedWidgetOfExactType<AppStateScope>();
+    assert(scope != null, 'AppStateScope not found in context');
+    return scope!.notifier!;
   }
 }

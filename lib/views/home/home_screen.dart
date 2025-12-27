@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../app_state.dart';
 import '../../models/mock_data.dart';
+import '../../models/restaurant_model.dart';
 import '../../theme.dart';
+import '../orders/orders_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ).pushNamed('/restaurant', arguments: restaurant);
               },
             ),
-            const _PlaceholderTab(title: 'Orders'),
+            const OrdersScreen(),
             const _PlaceholderTab(title: 'Favorites'),
             const _PlaceholderTab(title: 'Profile'),
           ],

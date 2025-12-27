@@ -1,37 +1,21 @@
+import 'cart_entry.dart';
+import 'restaurant_model.dart';
 import 'order_status.dart';
 
 class OrderData {
-  final String id;
-  final String restaurantName;
-  final double totalPrice;
-  OrderStatus status;
-
   OrderData({
     required this.id,
-    required this.restaurantName,
-    required this.totalPrice,
-    this.status = OrderStatus.placed,
+    required this.restaurant,
+    required this.items,
+    this.status = OrderStatus.pending,
+    required this.total,
   });
 
-  // 🔁 Convert to Map (save)
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'restaurantName': restaurantName,
-      'totalPrice': totalPrice,
-      'status': status.name,
-    };
-  }
+  final String id;
+  final RestaurantData restaurant;
+  final List<CartEntry> items;
+  OrderStatus status;
+  final double total;
 
-  // 🔁 Convert from Map (load)
-  factory OrderData.fromJson(Map<String, dynamic> json) {
-    return OrderData(
-      id: json['id'],
-      restaurantName: json['restaurantName'],
-      totalPrice: json['totalPrice'],
-      status: OrderStatus.values.firstWhere(
-        (e) => e.name == json['status'],
-      ),
-    );
-  }
+  int get totalItems => items.fold(0, (sum, e) => sum + e.quantity);
 }

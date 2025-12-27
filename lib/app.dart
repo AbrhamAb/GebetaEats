@@ -5,19 +5,19 @@ import 'models/mock_data.dart';
 import 'theme.dart';
 import 'views/splash/splash_screen.dart';
 import 'views/onboarding/onboarding_screen.dart';
-// import 'views/auth/login_screen.dart';
 import 'views/home/home_screen.dart';
 import 'views/restaurant/restaurant_detail_screen.dart';
 import 'views/cart/cart_screen.dart';
+import 'models/restaurant_model.dart';
 
-class GebetaeatsApp extends StatefulWidget {
-  const GebetaeatsApp({super.key});
+class GebetaEatsApp extends StatefulWidget {
+  const GebetaEatsApp({super.key});
 
   @override
-  State<GebetaeatsApp> createState() => _GebetaeatsAppState();
+  State<GebetaEatsApp> createState() => _GebetaEatsAppState();
 }
 
-class _GebetaeatsAppState extends State<GebetaeatsApp> {
+class _GebetaEatsAppState extends State<GebetaEatsApp> {
   final AppState _state = AppState();
 
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
@@ -26,16 +26,24 @@ class _GebetaeatsAppState extends State<GebetaeatsApp> {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case '/onboarding':
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
-      // case '/login':
-      // return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case '/restaurant':
-        final restaurant = settings.arguments is RestaurantData
-            ? settings.arguments as RestaurantData
-            : restaurants.first;
+        // If a RestaurantData instance was passed in, use it.
+        // Otherwise default to the first restaurant from sample data when available.
+        RestaurantData? restaurant;
+        if (settings.arguments is RestaurantData) {
+          restaurant = settings.arguments as RestaurantData;
+        } else if (restaurants.isNotEmpty) {
+          restaurant = restaurants.first;
+        }
+
+        if (restaurant == null) {
+          return MaterialPageRoute(builder: (_) => const SplashScreen());
+        }
+
         return MaterialPageRoute(
-          builder: (_) => RestaurantDetailScreen(restaurant: restaurant),
+          builder: (_) => RestaurantDetailScreen(restaurant: restaurant!),
         );
       case '/cart':
         return MaterialPageRoute(builder: (_) => const CartScreen());
@@ -46,8 +54,9 @@ class _GebetaeatsAppState extends State<GebetaeatsApp> {
 
   @override
   Widget build(BuildContext context) {
-    return AppStateScope(
-      notifier: _state,
+    // Minimal replacement for AppStateScope
+    return _AppStateProvider(
+      state: _state,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'GebetaEats',
@@ -57,4 +66,25 @@ class _GebetaeatsAppState extends State<GebetaeatsApp> {
       ),
     );
   }
+}
+
+// Minimal state provider
+class _AppStateProvider extends InheritedWidget {
+  final AppState state;
+
+  const _AppStateProvider({
+    required this.state,
+    required super.child,
+  });
+
+  static AppState of(BuildContext context) {
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<_AppStateProvider>();
+    assert(provider != null, 'No AppState found in context');
+    return provider!.state;
+  }
+
+  @override
+  bool updateShouldNotify(covariant _AppStateProvider oldWidget) =>
+      oldWidget.state != state;
 }
