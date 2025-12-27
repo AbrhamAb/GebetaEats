@@ -98,57 +98,61 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
         ],
       ),
       bottomNavigationBar: appState.totalItems > 0
-          ? SafeArea(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 12,
-                      offset: Offset(0, -4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '${appState.totalItems} Items',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            '\$${appState.total.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
+          ? SizedBox(
+              height: 80,
+              child: SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 12,
+                        offset: Offset(0, -4),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pushNamed('/cart'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(130, 48),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${appState.totalItems} Items',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              '\$${appState.total.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: const Text('View Cart'),
-                    ),
-                  ],
+                      ElevatedButton(
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed('/cart'),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(130, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: const Text('View Cart'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
