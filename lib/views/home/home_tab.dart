@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/mock_data.dart';
+import '../../models/restaurant_model.dart';
 import '../../theme.dart';
 import 'featured_card.dart';
 import 'restaurant_card.dart';
@@ -54,16 +55,22 @@ class HomeTab extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           SizedBox(
-            height: 100,
+            // Slightly larger to accommodate the image + label without overflow
+            height: 110,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                final label = categories[index % categories.length];
-                return Column(
-                  children: <Widget>[
+                final category = mainCategories[index % mainCategories.length];
+                return GestureDetector(
+                  onTap: () => Navigator.of(context).pushNamed(
+                    '/category',
+                    arguments: category.label,
+                  ),
+                  child: Column(
+                    children: <Widget>[
                     Container(
                       width: 70,
-                      height: 70,
+                      height: 64,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: AppColors.border),
@@ -76,24 +83,38 @@ class HomeTab extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.fastfood,
-                        color: AppColors.primary,
-                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: category.imageUrl != null
+                          ? Image.network(
+                              category.imageUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Icon(
+                                Icons.fastfood,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.fastfood,
+                              color: AppColors.primary,
+                            ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      label,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.text,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        category.label,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.text,
+                        ),
                       ),
                     ),
                   ],
+                  ),
                 );
               },
-              separatorBuilder: (_, __) => const SizedBox(width: 16),
-              itemCount: categories.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 16),
+              itemCount: mainCategories.length,
             ),
           ),
           const SizedBox(height: 18),
@@ -117,7 +138,7 @@ class HomeTab extends StatelessWidget {
                   child: FeaturedCard(restaurant: restaurant),
                 );
               },
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, _) => const SizedBox(width: 12),
               itemCount: restaurants.length,
             ),
           ),

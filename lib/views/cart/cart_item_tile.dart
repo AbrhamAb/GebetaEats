@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app_state.dart';
+import '../../models/cart_entry.dart';
 import '../../theme.dart';
 import 'quantity_button.dart';
 
@@ -32,6 +33,12 @@ class CartItemTile extends StatelessWidget {
               width: 100,
               height: 100,
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: 100,
+                height: 100,
+                color: Colors.grey.shade300,
+                child: const Icon(Icons.image_not_supported_outlined, color: AppColors.muted),
+              ),
             ),
           ),
           Expanded(

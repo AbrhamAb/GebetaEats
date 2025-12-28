@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app_state.dart';
-import '../../models/mock_data.dart';
+import '../../models/dish.dart';
 import '../../theme.dart';
 
 class RestaurantMenuList extends StatelessWidget {
@@ -27,7 +27,7 @@ class RestaurantMenuList extends StatelessWidget {
 
     return ListView.separated(
       itemCount: menu.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 14),
+      separatorBuilder: (_, _) => const SizedBox(height: 14),
       itemBuilder: (context, index) {
         final dish = menu[index];
         return _MenuItemTile(dish: dish, appState: appState);
@@ -71,7 +71,7 @@ class _MenuItemTile extends StatelessWidget {
                       height: 110,
                       color: Colors.grey.shade200,
                     ),
-              errorBuilder: (_, __, ___) => Container(
+              errorBuilder: (_, _, _) => Container(
                 width: 110,
                 height: 110,
                 color: Colors.grey.shade300,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/mock_data.dart';
+// removed unused import
+import '../../models/restaurant_model.dart';
 
 import '../../theme.dart';
 
@@ -31,7 +32,11 @@ class RestaurantCard extends StatelessWidget {
                 ),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Image.network(restaurant.heroImage, fit: BoxFit.cover),
+                  child: Image.network(
+                    restaurant.heroImage,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(color: Colors.grey.shade300),
+                  ),
                 ),
               ),
               if (restaurant.isFreeDelivery)

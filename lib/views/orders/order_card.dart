@@ -29,6 +29,12 @@ class OrderCard extends StatelessWidget {
                 width: 68,
                 height: 68,
                 fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 68,
+                  height: 68,
+                  color: Colors.grey.shade300,
+                  child: const Icon(Icons.image_not_supported_outlined, color: AppColors.muted),
+                ),
               ),
             ),
             const SizedBox(width: 12),

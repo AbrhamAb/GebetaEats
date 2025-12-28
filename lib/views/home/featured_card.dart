@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/mock_data.dart';
+import '../../models/restaurant_model.dart';
 
 class FeaturedCard extends StatelessWidget {
   const FeaturedCard({super.key, required this.restaurant});
@@ -20,7 +20,13 @@ class FeaturedCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Image.network(restaurant.heroImage, fit: BoxFit.cover),
+            child: Image.network(
+              restaurant.heroImage,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                color: Colors.grey.shade300,
+              ),
+            ),
           ),
           Positioned(
             left: 0,
