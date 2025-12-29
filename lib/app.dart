@@ -9,6 +9,8 @@ import 'views/auth/login_screen.dart';
 import 'views/home/home_screen.dart';
 import 'views/restaurant/restaurant_detail_screen.dart';
 import 'views/cart/cart_screen.dart';
+import 'views/checkout/checkout_screen.dart';
+import 'views/order_tracking/order_tracking_screen.dart';
 
 class GebetaeatsApp extends StatefulWidget {
   const GebetaeatsApp({super.key});
@@ -39,6 +41,11 @@ class _GebetaeatsAppState extends State<GebetaeatsApp> {
         );
       case '/cart':
         return MaterialPageRoute(builder: (_) => const CartScreen());
+      case '/checkout':
+        return MaterialPageRoute(builder: (_) => const CheckoutScreen());
+      case '/order-tracking':
+        return MaterialPageRoute(builder: (_) => const OrderTrackingScreen());
+
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }

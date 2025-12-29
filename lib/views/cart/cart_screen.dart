@@ -3,6 +3,7 @@ import '../../app_state.dart';
 import '../../theme.dart';
 
 import 'cart_item_tile.dart';
+import '../checkout/checkout_screen.dart';
 import 'cart_summary.dart';
 
 class CartScreen extends StatelessWidget {
@@ -72,7 +73,10 @@ class CartScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: entries.isEmpty ? null : () {},
+                onPressed: entries.isEmpty
+                    ? null
+                    : () => Navigator.of(context).pushNamed('/checkout'),
+
                 child: Text(
                   'Checkout (\$${appState.total.toStringAsFixed(2)})',
                 ),
