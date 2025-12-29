@@ -30,11 +30,13 @@ class AppState extends ChangeNotifier {
   void decrementDish(Dish dish) {
     final entry = _items[dish.id];
     if (entry == null) return;
+
     if (entry.quantity > 1) {
       entry.quantity -= 1;
     } else {
       _items.remove(dish.id);
     }
+
     notifyListeners();
   }
 
@@ -46,12 +48,17 @@ class AppState extends ChangeNotifier {
   double get subtotal =>
       _items.values.fold(0, (sum, entry) => sum + entry.total);
 
-  double get deliveryFee => items.isEmpty ? 0 : 3.50;
+  double get deliveryFee => _items.isEmpty ? 0 : 3.50;
 
   double get total => subtotal + deliveryFee;
 
   int get totalItems =>
       _items.values.fold(0, (sum, entry) => sum + entry.quantity);
+
+  void clearCart() {
+    _items.clear();
+    notifyListeners();
+  }
 }
 
 class AppStateScope extends InheritedNotifier<AppState> {
