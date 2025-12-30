@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
+import 'models/cart_entry.dart';
+import 'models/dish.dart';
+import 'models/order_data.dart';
 
-import 'models/mock_data.dart';
-
-class CartEntry {
-  CartEntry({required this.dish, this.quantity = 1});
-
-  final Dish dish;
-  int quantity;
-
-  double get total => dish.price * quantity;
-}
 
 class AppState extends ChangeNotifier {
-  final Map<String, CartEntry> _items = <String, CartEntry>{};
+  final Map<String, CartEntry> _items = {};
 
-  Map<String, CartEntry> get items =>
-      Map<String, CartEntry>.unmodifiable(_items);
+  Map<String, CartEntry> get items => Map.unmodifiable(_items);
 
   void addDish(Dish dish) {
-    final entry = _items[dish.id];
-    if (entry != null) {
-      entry.quantity += 1;
+    if (_items.containsKey(dish.id)) {
+      _items[dish.id]!.quantity += 1;
     } else {
-      _items[dish.id] = CartEntry(dish: dish, quantity: 1);
+      _items[dish.id] = CartEntry(dish: dish);
     }
     notifyListeners();
   }
@@ -48,17 +39,12 @@ class AppState extends ChangeNotifier {
   double get subtotal =>
       _items.values.fold(0, (sum, entry) => sum + entry.total);
 
-  double get deliveryFee => _items.isEmpty ? 0 : 3.50;
+  double get deliveryFee => items.isEmpty ? 0 : 3.50;
 
   double get total => subtotal + deliveryFee;
 
   int get totalItems =>
       _items.values.fold(0, (sum, entry) => sum + entry.quantity);
-
-  void clearCart() {
-    _items.clear();
-    notifyListeners();
-  }
 }
 
 class AppStateScope extends InheritedNotifier<AppState> {

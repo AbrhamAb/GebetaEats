@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/mock_data.dart';
+import '../../models/restaurant_model.dart';
 import '../../theme.dart';
 
 class RestaurantHeader extends StatelessWidget {
@@ -17,10 +17,10 @@ class RestaurantHeader extends StatelessWidget {
             child: Image.network(
               restaurant.heroImage,
               fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) => progress == null
+                loadingBuilder: (context, child, progress) => progress == null
                   ? child
                   : Container(color: Colors.grey.shade200),
-              errorBuilder: (_, __, ___) =>
+                errorBuilder: (_, _, _) =>
                   Container(color: Colors.grey.shade300),
             ),
           ),

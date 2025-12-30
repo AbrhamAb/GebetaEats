@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app_state.dart';
+import '../../models/cart_entry.dart';
 import '../../theme.dart';
-import 'quantity_button.dart';
+import '../cart/bloc/cart_bloc.dart';
+import '../cart/bloc/cart_event.dart';
 
 class CartItemTile extends StatelessWidget {
   const CartItemTile({super.key, required this.entry});
@@ -10,8 +13,6 @@ class CartItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appState = AppStateScope.of(context);
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -24,14 +25,18 @@ class CartItemTile extends StatelessWidget {
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(16),
-            ),
+            borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
             child: Image.network(
               entry.dish.imageUrl,
               width: 100,
               height: 100,
               fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: 100,
+                height: 100,
+                color: Colors.grey.shade300,
+                child: const Icon(Icons.image_not_supported_outlined, color: AppColors.muted),
+              ),
             ),
           ),
           Expanded(
@@ -59,9 +64,12 @@ class CartItemTile extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      QuantityButton(
-                        icon: Icons.remove,
-                        onTap: () => appState.decrementDish(entry.dish),
+                      // Decrement button
+                      IconButton(
+                        icon: const Icon(Icons.remove),
+                        onPressed: () {
+                          context.read<CartBloc>().add(RemoveDish(entry.dish));
+                        },
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -70,9 +78,12 @@ class CartItemTile extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
                       ),
-                      QuantityButton(
-                        icon: Icons.add,
-                        onTap: () => appState.addDish(entry.dish),
+                      // Increment button
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          context.read<CartBloc>().add(AddDish(entry.dish));
+                        },
                       ),
                     ],
                   ),

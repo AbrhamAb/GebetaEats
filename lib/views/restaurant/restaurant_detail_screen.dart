@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-
-import '../../app_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/mock_data.dart';
+import '../../models/restaurant_model.dart';
+import '../../models/dish.dart';
 import '../../theme.dart';
+import '../cart/bloc/cart_bloc.dart';
+import '../cart/bloc/cart_state.dart';
 import 'restaurant_header.dart';
 import 'restaurant_menu_list.dart';
 
@@ -33,14 +36,12 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    final appState = AppStateScope.of(context);
-    final menu =
-        restaurantMenus[widget.restaurant.id] ??
+    final menu = restaurantMenus[widget.restaurant.id] ??
         (restaurantMenus.isNotEmpty ? restaurantMenus.values.first : <Dish>[]);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.restaurant.name), // Improvement
+        title: Text(widget.restaurant.name),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -60,11 +61,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
                 color: AppColors.primary.withAlpha(40),
                 borderRadius: BorderRadius.circular(12),
               ),
-              labelPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 6,
-              ),
-              tabs: const <Widget>[
+              labelPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              tabs: const [
                 Tab(text: 'Menu'),
                 Tab(text: 'Info'),
                 Tab(text: 'Reviews'),
@@ -77,7 +75,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TabBarView(
                 controller: _tabController,
-                children: <Widget>[
+                children: [
                   RestaurantMenuList(menu: menu),
                   const Center(
                     child: Text(
@@ -97,66 +95,69 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
           ),
         ],
       ),
-      bottomNavigationBar: appState.totalItems > 0
-          ? SizedBox(
-              height: 80,
-              child: SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 12,
-                        offset: Offset(0, -4),
+      bottomNavigationBar: BlocBuilder<CartBloc, CartState>(
+  builder: (context, cartState) {
+    if (cartState.items.isEmpty) return const SizedBox.shrink();
+
+    final totalItems = cartState.items.length;
+    final total = cartState.items.values.fold<double>(
+      0,
+      (sum, item) => sum + item.price,
+    );
+
+    return SizedBox(
+      height: 80,
+      child: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, -4)),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$totalItems Items',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${appState.totalItems} Items',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              '\$${appState.total.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ],
-                        ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '\$${total.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
                       ),
-                      ElevatedButton(
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed('/cart'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(130, 48),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        child: const Text('View Cart'),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            )
-          : null,
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pushNamed('/cart'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(130, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text('View Cart'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  },
+),
+
     );
   }
 }

@@ -67,7 +67,7 @@ class OrderHistoryScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: ListView.separated(
             itemCount: orders.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) => OrderCard(order: orders[index]),
           ),
         ),
