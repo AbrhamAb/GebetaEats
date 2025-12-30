@@ -3,7 +3,6 @@ import '../../app_state.dart';
 import '../../theme.dart';
 
 import 'cart_item_tile.dart';
-import '../checkout/checkout_screen.dart';
 import 'cart_summary.dart';
 
 class CartScreen extends StatelessWidget {
@@ -48,7 +47,7 @@ class CartScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 12),
-            CartSummary(appState: appState),
+            CartSummary(),
 
             const SizedBox(height: 16),
             OutlinedButton(

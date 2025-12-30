@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../app_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/mock_data.dart';
 import '../../theme.dart';
+import '../cart/bloc/cart_bloc.dart';
+import '../cart/bloc/cart_event.dart';
 
 class RestaurantMenuList extends StatelessWidget {
   const RestaurantMenuList({super.key, required this.menu});
@@ -10,8 +12,6 @@ class RestaurantMenuList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appState = AppStateScope.of(context);
-
     if (menu.isEmpty) {
       return Center(
         child: Column(
@@ -30,17 +30,16 @@ class RestaurantMenuList extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 14),
       itemBuilder: (context, index) {
         final dish = menu[index];
-        return _MenuItemTile(dish: dish, appState: appState);
+        return _MenuItemTile(dish: dish);
       },
     );
   }
 }
 
 class _MenuItemTile extends StatelessWidget {
-  const _MenuItemTile({required this.dish, required this.appState});
+  const _MenuItemTile({required this.dish});
 
   final Dish dish;
-  final AppState appState;
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +55,7 @@ class _MenuItemTile extends StatelessWidget {
       child: Row(
         children: [
           ClipRRect(
-            borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(16),
-            ),
+            borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
             child: Image.network(
               dish.imageUrl,
               width: 110,
@@ -66,19 +63,12 @@ class _MenuItemTile extends StatelessWidget {
               fit: BoxFit.cover,
               loadingBuilder: (context, child, progress) => progress == null
                   ? child
-                  : Container(
-                      width: 110,
-                      height: 110,
-                      color: Colors.grey.shade200,
-                    ),
+                  : Container(width: 110, height: 110, color: Colors.grey.shade200),
               errorBuilder: (_, __, ___) => Container(
                 width: 110,
                 height: 110,
                 color: Colors.grey.shade300,
-                child: const Icon(
-                  Icons.image_not_supported_outlined,
-                  color: AppColors.muted,
-                ),
+                child: const Icon(Icons.image_not_supported_outlined, color: AppColors.muted),
               ),
             ),
           ),
@@ -116,10 +106,11 @@ class _MenuItemTile extends StatelessWidget {
                       ),
                       const Spacer(),
                       ElevatedButton(
-                        onPressed: () => appState.addDish(dish),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(80, 42),
-                        ),
+                        onPressed: () {
+                          // Dispatch event to CartBloc
+                          context.read<CartBloc>().add(AddDish(dish));
+                        },
+                        style: ElevatedButton.styleFrom(minimumSize: const Size(80, 42)),
                         child: const Text('+   Add'),
                       ),
                     ],

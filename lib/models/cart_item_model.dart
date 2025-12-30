@@ -1,7 +1,22 @@
-class CartItemModel {
-  CartItemModel({required this.id, required this.name, required this.quantity});
+class CartItem {
+  CartItem({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.quantity,
+  });
 
   final String id;
   final String name;
-  int quantity;
+  final double price;
+  final int quantity;
+
+  CartItem copyWith({int? quantity}) {
+    return CartItem(
+      id: id,
+      name: name,
+      price: price,
+      quantity: quantity ?? this.quantity,
+    );
+  }
 }

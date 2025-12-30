@@ -55,7 +55,7 @@ final List<OnboardingPageData> onboardingPages = <OnboardingPageData>[
   ),
   OnboardingPageData(
     imageUrl:
-        'https://images.unsplash.com/photo-1582468734752-7d2dfbb3626b?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
     title: 'Fast, reliable, and friendly delivery to your door.',
   ),
 ];
@@ -72,7 +72,7 @@ final List<RestaurantData> restaurants = <RestaurantData>[
     id: 'ethiopian_flavors',
     name: 'Ethiopian Flavors',
     heroImage:
-        'https://images.unsplash.com/photo-1604908177225-6c5b3c0c3a5b?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1200&q=80',
     rating: 4.9,
     eta: '20-30 min',
     deliveryFee: 'Free',
