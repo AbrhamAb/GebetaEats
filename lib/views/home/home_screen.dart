@@ -5,7 +5,9 @@ import '../../theme.dart';
 
 import '../home/home_tab.dart';
 import '../home/placeholder_tab.dart';
-
+import '../orders/orders_tab.dart';
+import '../favorites/favorites_screen.dart';
+import '../home/profile_tab.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -31,9 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ).pushNamed('/restaurant', arguments: restaurant);
               },
             ),
-            const PlaceholderTab(title: 'Orders'),
-            const PlaceholderTab(title: 'Favorites'),
-            const PlaceholderTab(title: 'Profile'),
+            -const OrdersTab(),
+            const FavoritesTab(),
+            const ProfileTab(),
           ],
         ),
       ),
