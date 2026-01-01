@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme.dart';
+import '../../app_state.dart';
 import 'eta_card.dart';
 import 'tracking_tile.dart';
 import 'tracking_step.dart';
@@ -9,6 +10,23 @@ class OrderTrackingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appState = AppStateScope.of(context);
+
+    if (appState.orders.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Order Tracking'),
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.text,
+        ),
+        body: const Center(child: Text("No active order to track 😅")),
+      );
+    }
+
+    final order = appState.orders.last;
+    final status = order.status;
+
+    // Updated step activation logic to match OrdersTab status progression
     final steps = <TrackingStep>[
       TrackingStep(
         title: 'Order Received',
@@ -18,23 +36,38 @@ class OrderTrackingScreen extends StatelessWidget {
       ),
       TrackingStep(
         title: 'Food Being Prepared',
-        subtitle: 'The restaurant is now preparing your delicious meal.',
+        subtitle: 'The restaurant is preparing your meal.',
         icon: Icons.dinner_dining,
-        isActive: true,
+        isActive:
+            status == OrderStatus.preparing ||
+            status == OrderStatus.onTheWay ||
+            status == OrderStatus.delivered,
       ),
       TrackingStep(
         title: 'Out for Delivery',
-        subtitle: 'Your food is on its way with our driver.',
+        subtitle: 'Your food is on the way.',
         icon: Icons.pedal_bike,
-        isActive: true,
+        isActive:
+            status == OrderStatus.onTheWay || status == OrderStatus.delivered,
       ),
       TrackingStep(
         title: 'Delivered',
         subtitle: 'Enjoy your GebetaEats meal!',
         icon: Icons.check_circle_outline,
-        isActive: false,
+        isActive: status == OrderStatus.delivered,
       ),
     ];
+
+    final diff = DateTime.now().difference(order.date).inMinutes;
+    String eta = "15–20 min";
+    if (diff < 1)
+      eta = "20–25 min";
+    else if (diff < 3)
+      eta = "15–20 min";
+    else if (diff < 5)
+      eta = "10–15 min";
+    else
+      eta = "Arriving now";
 
     return Scaffold(
       appBar: AppBar(
@@ -52,8 +85,7 @@ class OrderTrackingScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const EtaCard(title: 'Estimated Delivery Time', eta: '15-20 min'),
-              const SizedBox(height: 18),
+              EtaCard(title: 'Estimated Delivery Time', eta: eta),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -72,9 +104,9 @@ class OrderTrackingScreen extends StatelessWidget {
                 child: Column(
                   children: List.generate(steps.length * 2 - 1, (index) {
                     if (index.isOdd) {
-                      final isDone =
-                          steps[index ~/ 2].isActive &&
-                          steps[(index ~/ 2) + 1].isActive;
+                      final left = steps[index ~/ 2];
+                      final right = steps[(index ~/ 2) + 1];
+                      final isDone = left.isActive && right.isActive;
                       return Padding(
                         padding: const EdgeInsets.only(left: 28),
                         child: Container(

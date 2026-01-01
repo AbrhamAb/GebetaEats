@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../app_state.dart';
-import '../../models/mock_data.dart';
+import '../../models/dish_model.dart';
 import '../../theme.dart';
+
+import 'food_details_screen.dart';
 
 class RestaurantMenuList extends StatelessWidget {
   const RestaurantMenuList({super.key, required this.menu});
@@ -44,91 +46,120 @@ class _MenuItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(16),
+    final isFav = appState.isFavorite(dish);
+
+    return InkWell(
+      onTap: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => FoodDetailsScreen(dish: dish))),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.border),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 4),
             ),
-            child: Image.network(
-              dish.imageUrl,
-              width: 110,
-              height: 110,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) => progress == null
-                  ? child
-                  : Container(
-                      width: 110,
-                      height: 110,
-                      color: Colors.grey.shade200,
-                    ),
-              errorBuilder: (_, __, ___) => Container(
+          ],
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(16),
+              ),
+              child: Image.network(
+                dish.imageUrl,
                 width: 110,
                 height: 110,
-                color: Colors.grey.shade300,
-                child: const Icon(
-                  Icons.image_not_supported_outlined,
-                  color: AppColors.muted,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, progress) => progress == null
+                    ? child
+                    : Container(
+                        width: 110,
+                        height: 110,
+                        color: Colors.grey.shade200,
+                      ),
+                errorBuilder: (_, __, ___) => Container(
+                  width: 110,
+                  height: 110,
+                  color: Colors.grey.shade300,
+                  child: const Icon(
+                    Icons.image_not_supported_outlined,
+                    color: AppColors.muted,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    dish.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.text,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            dish.name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.text,
+                            ),
+                          ),
+                        ),
+
+                        /// ❤️ SMALL HEART BUTTON
+                        GestureDetector(
+                          onTap: () {
+                            appState.toggleFavorite(dish);
+                          },
+                          child: Icon(
+                            isFav ? Icons.favorite : Icons.favorite_border,
+                            color: isFav ? Colors.red : AppColors.muted,
+                            size: 22,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    dish.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: AppColors.muted),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        '\$${dish.price.toStringAsFixed(2)}',
-                        style: const TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
+                    const SizedBox(height: 6),
+                    Text(
+                      dish.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: AppColors.muted),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Text(
+                          '\$${dish.price.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: () => appState.addDish(dish),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(80, 42),
+                        const Spacer(),
+                        ElevatedButton(
+                          onPressed: () => appState.addDish(dish),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(80, 42),
+                          ),
+                          child: const Text('+   Add'),
                         ),
-                        child: const Text('+   Add'),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

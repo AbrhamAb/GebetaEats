@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../../app_state.dart';
 import '../../theme.dart';
+import '../order_tracking/order_tracking_screen.dart';
 
 class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key});
@@ -10,6 +10,9 @@ class CheckoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
     final entries = appState.items.values.toList();
+    final address = appState.addresses.isNotEmpty
+        ? appState.addresses.first
+        : 'No address set';
 
     return Scaffold(
       appBar: AppBar(
@@ -35,167 +38,176 @@ class CheckoutScreen extends StatelessWidget {
                     ),
                   ),
                 )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Confirm Your Order',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.text,
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Confirm Your Order',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.text,
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 22),
 
-                    const SizedBox(height: 22),
-                    const Text(
-                      'Delivery Address',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.text,
+                      /// ADDRESS
+                      const Text(
+                        'Delivery Address',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.text,
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 14,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: Row(
-                        children: const <Widget>[
-                          Icon(Icons.location_pin, color: AppColors.primary),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              '123 Main Street, Apt 4B, Bahir Dar, Ethiopia',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.text,
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.location_pin,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                address,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.text,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Order Summary',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.text,
+                      const SizedBox(height: 24),
+
+                      /// ORDER SUMMARY
+                      const Text(
+                        'Order Summary',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.text,
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    // ---- Cart Items Preview ----
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: Column(
-                        children: List.generate(
-                          entries.length > 3 ? 3 : entries.length,
-                          (index) {
-                            final e = entries[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    '${e.quantity}x',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      e.dish.name,
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Column(
+                          children: List.generate(
+                            entries.length > 3 ? 3 : entries.length,
+                            (index) {
+                              final e = entries[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '${e.quantity}x',
                                       style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w700,
                                       ),
                                     ),
-                                  ),
-                                  Text(
-                                    '\$${e.total.toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        e.dish.name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    Text(
+                                      '\$${e.total.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      if (entries.length > 3)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 6),
+                          child: Text(
+                            '+ more items...',
+                            style: TextStyle(color: AppColors.muted),
+                          ),
+                        ),
+
+                      const SizedBox(height: 22),
+
+                      /// PRICE BOX
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Column(
+                          children: [
+                            _priceRow('Subtotal', appState.subtotal),
+                            const SizedBox(height: 6),
+                            _priceRow('Delivery Fee', appState.deliveryFee),
+                            const Divider(height: 20),
+                            _priceRow('Total', appState.total, isBold: true),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 22),
+
+                      /// CONFIRM BUTTON
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (entries.isEmpty) return;
+
+                            await appState.placeOrderInSupabase();
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const OrderTrackingScreen(),
                               ),
                             );
                           },
-                        ),
-                      ),
-                    ),
-
-                    if (entries.length > 3)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 6),
-                        child: Text(
-                          '+ more items...',
-                          style: TextStyle(color: AppColors.muted),
+                          child: Text(
+                            'Confirm Order  (\$${appState.total.toStringAsFixed(2)})',
+                          ),
                         ),
                       ),
 
-                    const SizedBox(height: 22),
-
-                    // ---- Price Breakdown ----
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: Column(
-                        children: [
-                          _priceRow('Subtotal', appState.subtotal),
-                          const SizedBox(height: 6),
-                          _priceRow('Delivery Fee', appState.deliveryFee),
-                          const Divider(height: 20),
-                          _priceRow('Total', appState.total, isBold: true),
-                        ],
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: later -> send to backend here
-
-                          /// Clear cart after confirming
-                          appState.clearCart();
-
-                          Navigator.of(context).pushNamed('/order-tracking');
-                        },
-                        child: Text(
-                          'Confirm Order  (\$${appState.total.toStringAsFixed(2)})',
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-                  ],
+                      const SizedBox(height: 12),
+                    ],
+                  ),
                 ),
         ),
       ),

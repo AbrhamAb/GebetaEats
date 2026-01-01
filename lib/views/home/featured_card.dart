@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../models/mock_data.dart';
+import '../../app_state.dart';
+import '/models/restaurant_model.dart';
 
 class FeaturedCard extends StatelessWidget {
   const FeaturedCard({super.key, required this.restaurant});
 
-  final RestaurantData restaurant;
+  final Restaurant restaurant;
 
   @override
   Widget build(BuildContext context) {
+    final appState = AppStateScope.of(context);
+    final isFav = appState.isFavoriteRestaurant(restaurant);
+
     return Container(
       width: 240,
       decoration: BoxDecoration(
@@ -20,8 +24,31 @@ class FeaturedCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned.fill(
-            child: Image.network(restaurant.heroImage, fit: BoxFit.cover),
+            child: Image.network(
+              restaurant.heroImage,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) =>
+                  Container(color: Colors.grey[200]), // fallback
+            ),
           ),
+
+          /// ❤️ Favorite Button
+          Positioned(
+            top: 12,
+            right: 12,
+            child: GestureDetector(
+              onTap: () => appState.toggleFavoriteRestaurant(restaurant),
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 18,
+                child: Icon(
+                  isFav ? Icons.favorite : Icons.favorite_border,
+                  color: isFav ? Colors.red : Colors.black54,
+                ),
+              ),
+            ),
+          ),
+
           Positioned(
             left: 0,
             right: 0,
@@ -63,7 +90,7 @@ class FeaturedCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        restaurant.eta,
+                        '${restaurant.deliveryTime} min',
                         style: const TextStyle(color: Colors.white70),
                       ),
                       const SizedBox(width: 8),
@@ -74,7 +101,7 @@ class FeaturedCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        restaurant.deliveryFee,
+                        '\$${restaurant.deliveryFee}',
                         style: const TextStyle(color: Colors.white70),
                       ),
                     ],

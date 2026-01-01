@@ -4,7 +4,9 @@ import '../../app_state.dart';
 import '../../theme.dart';
 
 import '../home/home_tab.dart';
-import '../home/placeholder_tab.dart';
+import '../orders/orders_tab.dart';
+import '../favorites/favorites_screen.dart';
+import '../profile/profile_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,10 +17,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _tabIndex = 0;
+  bool _hasFetched = false; // Ensure fetchRestaurants is called only once
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final appState = AppStateScope.of(context);
+
+    if (!_hasFetched) {
+      _hasFetched = true;
+      appState.fetchRestaurants(); // Fetch restaurants from Supabase
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
+
     return Scaffold(
       body: SafeArea(
         child: IndexedStack(
@@ -31,9 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ).pushNamed('/restaurant', arguments: restaurant);
               },
             ),
-            const PlaceholderTab(title: 'Orders'),
-            const PlaceholderTab(title: 'Favorites'),
-            const PlaceholderTab(title: 'Profile'),
+            const OrdersTab(),
+            const FavoritesTab(),
+            const ProfileTab(),
           ],
         ),
       ),
@@ -43,20 +58,17 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.muted,
         type: BottomNavigationBarType.fixed,
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
-            label: 'Home',
-          ),
-          const BottomNavigationBarItem(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
+          BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
             label: 'Orders',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.favorite_border),
             label: 'Favorites',
           ),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             label: 'Profile',
           ),

@@ -10,11 +10,7 @@ class ProfileTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('${item.label} tapped.')));
-      },
+      onTap: item.onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
@@ -37,7 +33,11 @@ class ProfileTile extends StatelessWidget {
                 ),
               ),
             ),
-            const Icon(Icons.open_in_new, color: AppColors.muted),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: AppColors.muted,
+            ),
           ],
         ),
       ),

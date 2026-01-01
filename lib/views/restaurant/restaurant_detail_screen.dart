@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app_state.dart';
-import '../../models/mock_data.dart';
+import '../../models/restaurant_model.dart';
 import '../../theme.dart';
 import 'restaurant_header.dart';
 import 'restaurant_menu_list.dart';
@@ -9,7 +9,7 @@ import 'restaurant_menu_list.dart';
 class RestaurantDetailScreen extends StatefulWidget {
   const RestaurantDetailScreen({super.key, required this.restaurant});
 
-  final RestaurantData restaurant;
+  final Restaurant restaurant;
 
   @override
   State<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
@@ -23,6 +23,12 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+
+    /// ⭐ Fetch dishes AFTER build context is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final appState = AppStateScope.of(context);
+      appState.fetchDishesForRestaurant(widget.restaurant.id);
+    });
   }
 
   @override
@@ -34,13 +40,15 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
   @override
   Widget build(BuildContext context) {
     final appState = AppStateScope.of(context);
-    final menu =
-        restaurantMenus[widget.restaurant.id] ??
-        (restaurantMenus.isNotEmpty ? restaurantMenus.values.first : <Dish>[]);
+
+    /// Filter dishes for THIS restaurant
+    final menu = appState.dishes
+        .where((dish) => dish.restaurantId == widget.restaurant.id)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.restaurant.name), // Improvement
+        title: Text(widget.restaurant.name),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -49,6 +57,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
       body: Column(
         children: <Widget>[
           RestaurantHeader(restaurant: widget.restaurant),
+
+          /// -------- Tabs ----------
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             alignment: Alignment.centerLeft,
@@ -72,19 +82,27 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
             ),
           ),
           const SizedBox(height: 8),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TabBarView(
                 controller: _tabController,
                 children: <Widget>[
-                  RestaurantMenuList(menu: menu),
+                  /// ⭐ Show loader while fetching dishes
+                  appState.isLoadingDishes
+                      ? const Center(child: CircularProgressIndicator())
+                      : RestaurantMenuList(menu: menu),
+
+                  /// INFO TAB
                   const Center(
                     child: Text(
                       'Restaurant info coming soon',
                       style: TextStyle(color: AppColors.muted),
                     ),
                   ),
+
+                  /// REVIEWS TAB
                   const Center(
                     child: Text(
                       'Reviews coming soon',
@@ -97,6 +115,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen>
           ),
         ],
       ),
+
+      /// -------- Bottom Cart Bar ----------
       bottomNavigationBar: appState.totalItems > 0
           ? SizedBox(
               height: 80,

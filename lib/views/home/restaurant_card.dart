@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../models/mock_data.dart';
-
+import '../../app_state.dart';
 import '../../theme.dart';
+import '/models/restaurant_model.dart';
 
 class RestaurantCard extends StatelessWidget {
   const RestaurantCard({super.key, required this.restaurant});
 
-  final RestaurantData restaurant;
+  final Restaurant restaurant;
 
   @override
   Widget build(BuildContext context) {
-    // paste original body of _RestaurantCard here unchanged
+    final appState = AppStateScope.of(context);
+    final isFav = appState.isFavoriteRestaurant(restaurant);
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -31,43 +33,34 @@ class RestaurantCard extends StatelessWidget {
                 ),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Image.network(restaurant.heroImage, fit: BoxFit.cover),
-                ),
-              ),
-              if (restaurant.isFreeDelivery)
-                Positioned(
-                  left: 12,
-                  top: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Text(
-                      'Free Delivery',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12,
-                      ),
-                    ),
+                  child: Image.network(
+                    restaurant.heroImage,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        Container(color: Colors.grey[200]),
                   ),
                 ),
+              ),
+
+              /// ❤️ Favorite Button
               Positioned(
                 right: 12,
                 top: 12,
-                child: CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.white,
-                  child: const Icon(Icons.star_border, color: Colors.amber),
+                child: GestureDetector(
+                  onTap: () => appState.toggleFavoriteRestaurant(restaurant),
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: isFav ? Colors.red : Colors.black54,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
+
           Padding(
             padding: const EdgeInsets.all(14),
             child: Column(
@@ -106,7 +99,7 @@ class RestaurantCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      restaurant.eta,
+                      '${restaurant.deliveryTime} min',
                       style: const TextStyle(color: AppColors.muted),
                     ),
                     const SizedBox(width: 12),
@@ -117,7 +110,7 @@ class RestaurantCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      restaurant.deliveryFee,
+                      '\$${restaurant.deliveryFee}',
                       style: const TextStyle(color: AppColors.muted),
                     ),
                   ],
